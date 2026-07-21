@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Planejamento de Aulas · Laboratório de Informática Magnante</title>
+  <meta name="description" content="Fichas de planejamento de aulas para o laboratório de informática, vinculadas ao Agenda Lab." />
+  <meta name="theme-color" content="#0B1220" />
+  <script>
+    (function () {
+      try {
+        var tema = localStorage.getItem("lab_tema");
+        if (tema === "claro") document.documentElement.setAttribute("data-tema", "claro");
+      } catch (e) {}
+    })();
+  </script>
+
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="icons/icon-192.png" />
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="scanline-overlay" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <div class="topbar__brand">
+      <span class="topbar__logo">✎</span>
+      <div>
+        <h1>Planejamento de Aulas</h1>
+        <p>Laboratório de Informática Magnante</p>
+      </div>
+    </div>
+    <div class="topbar__direita">
+      <div class="topbar__stats">
+        <span class="stat"><strong id="stat-total">0</strong> fichas</span>
+        <span class="stat stat--vinculado"><strong id="stat-vinculados">0</strong> vinculadas</span>
+        <span class="stat stat--rascunho"><strong id="stat-rascunhos">0</strong> rascunhos</span>
+      </div>
+      <button type="button" id="btn-tema" class="btn-tema" aria-label="Alternar modo claro/escuro" title="Alternar tema">
+        <span class="btn-tema__icone" aria-hidden="true">☾</span>
+      </button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <!-- Painel esquerdo: ficha (formulário) -->
+    <section class="console" aria-labelledby="form-titulo-secao">
+      <div class="console__header">
+        <span class="console__cursor">&gt;_</span>
+        <h2 id="form-titulo-secao">Nova ficha</h2>
+      </div>
+
+      <form id="form-plano" class="console__form" novalidate>
+        <p id="form-erro" class="form-erro" role="alert" hidden></p>
+
+        <!-- Vínculo com o Agenda Lab -->
+        <div class="vinculo-box" id="vinculo-box">
+          <div class="vinculo-box__vazio" id="vinculo-vazio">
+            <p>Esta ficha ainda não está vinculada a um horário do Agenda Lab.</p>
+            <button type="button" id="btn-abrir-vinculo" class="btn btn--fantasma btn--pequeno">Vincular a um horário</button>
+          </div>
+          <div class="vinculo-box__ativo" id="vinculo-ativo" hidden>
+            <div class="vinculo-chip" id="vinculo-chip"></div>
+            <button type="button" id="btn-remover-vinculo" class="btn-icon" aria-label="Remover vínculo" title="Remover vínculo">✕</button>
+          </div>
+
+          <div class="vinculo-picker" id="vinculo-picker" hidden>
+            <label class="campo">
+              <span>Escolha a data</span>
+              <input type="date" id="vinculo-data" />
+            </label>
+            <div id="vinculo-slots" class="vinculo-slots"></div>
+            <button type="button" id="btn-fechar-vinculo" class="btn btn--fantasma btn--pequeno">Fechar</button>
+          </div>
+        </div>
+
+        <label class="campo">
+          <span>Tema da aula</span>
+          <input id="input-titulo" type="text" placeholder="Ex.: Introdução a planilhas eletrônicas" autocomplete="off" required />
+        </label>
+
+        <div class="campo-grupo">
+          <label class="campo">
+            <span>Disciplina</span>
+            <input id="input-disciplina" type="text" placeholder="Ex.: Informática" autocomplete="off" required />
+          </label>
+          <label class="campo">
+            <span>Turma <em>(opcional)</em></span>
+            <input id="input-turma" type="text" placeholder="Ex.: 3º Info A" autocomplete="off" />
+          </label>
+        </div>
+
+        <label class="campo">
+          <span>Habilidade(s) BNCC <em>(opcional)</em></span>
+          <input id="input-bncc" type="text" placeholder="Ex.: EF67CO09" autocomplete="off" />
+        </label>
+
+        <label class="campo">
+          <span>Objetivos</span>
+          <textarea id="input-objetivos" rows="2" placeholder="O que os alunos devem aprender ou ser capazes de fazer"></textarea>
+        </label>
+
+        <label class="campo">
+          <span>Conteúdo / tópicos</span>
+          <textarea id="input-conteudo" rows="2" placeholder="Assuntos abordados na aula"></textarea>
+        </label>
+
+        <label class="campo">
+          <span>Metodologia / etapas</span>
+          <textarea id="input-metodologia" rows="3" placeholder="Ex.: 1) Roda de conversa (10min)  2) Atividade prática (25min)  3) Fechamento (10min)"></textarea>
+        </label>
+
+        <label class="campo">
+          <span>Recursos necessários</span>
+          <textarea id="input-recursos" rows="2" placeholder="Softwares, sites, nº de máquinas, materiais impressos..."></textarea>
+        </label>
+
+        <label class="campo">
+          <span>Avaliação</span>
+          <textarea id="input-avaliacao" rows="2" placeholder="Como o aprendizado será verificado"></textarea>
+        </label>
+
+        <label class="campo">
+          <span>Observações <em>(opcional)</em></span>
+          <textarea id="input-observacoes" rows="2" placeholder="Anotações gerais"></textarea>
+        </label>
+
+        <div class="console__acoes">
+          <button type="submit" id="btn-submit" class="btn btn--primario">Salvar ficha</button>
+          <button type="button" id="btn-cancelar-edicao" class="btn btn--fantasma" hidden>Cancelar edição</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Painel direito: catálogo de fichas -->
+    <section class="painel-direito">
+      <div class="catalogo">
+        <div class="catalogo__header">
+          <h2>Fichas de planejamento</h2>
+          <input id="input-busca" type="search" placeholder="Buscar por tema, disciplina, turma ou professor…" />
+        </div>
+
+        <div class="catalogo__filtros" id="catalogo-filtros">
+          <button type="button" class="filtro-chip is-ativo" data-filtro="todas">Todas</button>
+          <button type="button" class="filtro-chip" data-filtro="vinculado">Vinculadas</button>
+          <button type="button" class="filtro-chip" data-filtro="rascunho">Rascunhos</button>
+        </div>
+
+        <div id="grade-fichas" class="grade-fichas"></div>
+        <p id="estado-vazio" class="estado-vazio" hidden>
+          Nenhuma ficha por aqui ainda. Preencha o formulário ao lado para criar a primeira.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script src="js/config.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
